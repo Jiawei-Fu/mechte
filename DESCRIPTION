@@ -1,0 +1,17 @@
+Package: mechte
+Title: Extract Mechanisms from Heterogeneous Effects
+Version: 0.0.0.9000
+Authors@R: 
+    person("Jiawei", "Fu", , "jf3739@nyu.edu", role = c("aut", "cre"))
+Description: This packages balabala.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Imports: 
+    ggplot2,
+    simex,
+    stats
+Depends: 
+    R (>= 2.10)
+LazyData: true
