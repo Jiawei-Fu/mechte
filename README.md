@@ -4,7 +4,7 @@ The package contains a suite of functions designed to estimate average causal me
 
 Fu, Jiawei. 2023. "Extract Mechanisms from Heterogeneous Effects: A New Identification Strategy for Mediation Analysis." Working paper, New York University. Available at https://jiaweifu.org/pdf/mechanism.pdf
 
-(In particular, it is helpful to read section 6.2 and 6.3, two applications.)
+**(In particular, it is helpful to read section 6.2 and 6.3, two applications.)**
 
 To install and use the latest version of the package, use the following code:
 ```r
