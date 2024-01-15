@@ -1,28 +1,32 @@
 #' @title Causal Mediation with SIMEX estimator
-#' @description Estimation of the beta (key part of the causal mediation effect) with the SIMEX estimator.
+#' @description This function estimates the average mediation effects with the SIMEX estimator, following the methodology outlined in Fu (2023). In general, the method transforms the challenging mediation problem into a simple linear regression problem without compromising the non-parametric nature. To implement the SIMEX estimator, we assume that researchers have obtained multiple estimated average treatment effects on the mediator and outcome, and corresponding standard errors. To get those average treatment effects, one can use causal trees or meta-analysis, as described by Fu (2023). With those estimates as inputs, this function returns average mediation effects.
 #'
 #' @param gamma_hat a vector of the effect of the treatment on the mediator.
 #' @param tau_hat a vector of the total effect of the treatment on the outcome.
 #' @param sd_u a vector of the standard error of gamma, the effect of the treatment on the mediator.
 #' @param b the number of bootstrap replicates. The default number is 1000.
 #'
-#' @return beta estimated value of beta.
-#' @return alpha estimated value of alpha.
-#' @return se_alpha standard error of the estimated alpha.
-#' @return se_beta standard error of the estimated beta.
-#' @return p_alpha P-value of alpha.
-#' @return p_beta P-value of beta.
-#' @return ave_med the estimated average mediation effects.
+#' @returns `ave_med` the estimated average mediation effects.
+#' @returns `beta` estimated value of beta.
+#' @returns `alpha` estimated value of alpha.
+#' @returns `se_alpha` standard error of the estimated alpha.
+#' @returns `se_beta` standard error of the estimated beta.
+#' @returns `p_alpha` P-value of alpha.
+#' @returns `p_beta` P-value of beta.
+#'
 #'
 #' @export
 #'
 #' @examples
 #' data(example_dat)  # input data
 #' example_dat <- as.data.frame(example_dat)
-#' simest(example_dat$gamma_hat,example_dat$tau_hat,sd_u) # simex estimator
+#' simest(example_dat$gamma_hat,example_dat$tau_hat,example_dat$sd_u) # simex estimator
 #'
-#' tmp <- simest(example_dat$gamma_hat,example_dat$tau_hat,example_dat$sd_u) # save the result
-#' tmp$beta  # extract the value
+#' # assign the result to the tmp
+#' tmp <- simest(example_dat$gamma_hat,example_dat$tau_hat,example_dat$sd_u)
+#' tmp$ave_med  # extract the value
+#'
+#' @references Jiawei Fu. 2013. "Extract Mechanisms from Heterogeneous Effects: A New Identification Strategy for Mediation Analysis" \emph{Working Paper}.
 simest <- function(gamma_hat,tau_hat,sd_u,b=1000){
 
   n1 <- length(gamma_hat)

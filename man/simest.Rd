@@ -16,28 +16,33 @@ simest(gamma_hat, tau_hat, sd_u, b = 1000)
 \item{b}{the number of bootstrap replicates. The default number is 1000.}
 }
 \value{
-beta estimated value of beta.
+\code{ave_med} the estimated average mediation effects.
 
-alpha estimated value of alpha.
+\code{beta} estimated value of beta.
 
-se_alpha standard error of the estimated alpha.
+\code{alpha} estimated value of alpha.
 
-se_beta standard error of the estimated beta.
+\code{se_alpha} standard error of the estimated alpha.
 
-p_alpha P-value of alpha.
+\code{se_beta} standard error of the estimated beta.
 
-p_beta P-value of beta.
+\code{p_alpha} P-value of alpha.
 
-ave_med the estimated average mediation effects.
+\code{p_beta} P-value of beta.
 }
 \description{
-Estimation of the beta (key part of the causal mediation effect) with the SIMEX estimator.
+This function estimates the average mediation effects with the SIMEX estimator, following the methodology outlined in Fu (2023). In general, the method transforms the challenging mediation problem into a simple linear regression problem without compromising the non-parametric nature. To implement the SIMEX estimator, we assume that researchers have obtained multiple estimated average treatment effects on the mediator and outcome, and corresponding standard errors. To get those average treatment effects, one can use causal trees or meta-analysis, as described by Fu (2023). With those estimates as inputs, this function returns average mediation effects.
 }
 \examples{
 data(example_dat)  # input data
 example_dat <- as.data.frame(example_dat)
-simest(example_dat$gamma_hat,example_dat$tau_hat,sd_u) # simex estimator
+simest(example_dat$gamma_hat,example_dat$tau_hat,example_dat$sd_u) # simex estimator
 
-tmp <- simest(example_dat$gamma_hat,example_dat$tau_hat,example_dat$sd_u) # save the result
-tmp$beta  # extract the value
+# assign the result to the tmp
+tmp <- simest(example_dat$gamma_hat,example_dat$tau_hat,example_dat$sd_u)
+tmp$ave_med  # extract the value
+
+}
+\references{
+Jiawei Fu. 2013. "Extract Mechanisms from Heterogeneous Effects: A New Identification Strategy for Mediation Analysis" \emph{Working Paper}.
 }

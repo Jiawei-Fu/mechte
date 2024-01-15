@@ -17,6 +17,6 @@ A data frame with 100 observations and 4 variables:
 example_dat
 }
 \description{
-A dataset containing variables...
+A pseudo-dataset containing average causal effects of the treatment on the mediator andoutcome, and corresponding standard errors.
 }
 \keyword{datasets}

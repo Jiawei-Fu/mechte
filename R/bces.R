@@ -1,5 +1,5 @@
 #' @title Causal Mediation with BCES estimator
-#' @description This function estimates the the beta (key part of the causal mediation effect) with the BCES estimator following Fu (2023).In general,
+#' @description This function estimates the average mediation effects with the BCES estimator, following the methodology outlined in Fu (2023).. However, it's important to note that we recommend against using this function for your analyses. Instead, we suggest employing the function `simest`, which is likely to yield more reliable and accurate results.
 #'
 #' @param gamma_hat a vector of the effect of the treatment on the mediator.
 #' @param tau_hat a vector of the total effect of the treatment on the outcome.
@@ -10,6 +10,7 @@
 #' @param b the number of bootstrap replicates. The default number is 1000.
 #' @param seed a single value passed to \code{set.seed}.
 #'
+#' @return ave_med the estimated average mediation effect.
 #' @return beta estimated value of beta.
 #' @return alpha estimated value of alpha.
 #' @return sd_alpha standard error of the estimated alpha.
@@ -22,7 +23,7 @@
 #' @return p_beta P-value of beta based on analytic formula.
 #' @return boot_p_alpha P-value of alpha based on bootstrap.
 #' @return boot_p_beta P-value of beta based on bootstrap.
-#' @return ave_med the estimated average mediation effect.
+#'
 #'
 #' @export
 #'

@@ -33,6 +33,8 @@ bces(
 \item{seed}{a single value passed to \code{set.seed}.}
 }
 \value{
+ave_med the estimated average mediation effect.
+
 beta estimated value of beta.
 
 alpha estimated value of alpha.
@@ -56,11 +58,9 @@ p_beta P-value of beta based on analytic formula.
 boot_p_alpha P-value of alpha based on bootstrap.
 
 boot_p_beta P-value of beta based on bootstrap.
-
-ave_med the estimated average mediation effect.
 }
 \description{
-This function estimates the the beta (key part of the causal mediation effect) with the BCES estimator following Fu (2023).In general,
+This function estimates the average mediation effects with the BCES estimator, following the methodology outlined in Fu (2023).. However, it's important to note that we recommend against using this function for your analyses. Instead, we suggest employing the function \code{simest}, which is likely to yield more reliable and accurate results.
 }
 \examples{
 \dontrun{
