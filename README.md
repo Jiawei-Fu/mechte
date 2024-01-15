@@ -18,7 +18,7 @@ data(example_dat)
 example_dat <- as.data.frame(example_dat)
 ```
 
-The following code snippet demonstrates the implementation of the SIMEX estimator in R.
+The following code snippet demonstrates the implementation of the SIMEX estimator in R. `gamma_hat` is the vector of average treatment effects on the mediator, `tau_hat' is the vector of average treatment effects on the outcome, and `sd_u' is the vector of the standard error of `gamma_hat`. (SIMEX does not need the standard error of `tau_hat`, which is the `sd_v`.) 
 
 ```r
 simest(example_dat$gamma_hat,example_dat$tau_hat,example_dat$sd_u)
