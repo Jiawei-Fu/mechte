@@ -36,14 +36,31 @@ plot_mech <- function(gamma_hat,tau_hat,sd_u,sd_v,confid=0.05,b=1000,fit="SIMEX"
 
   dat <- data.frame(gamma_hat,tau_hat,sd_u,sd_v)
 
-  mod <- bces(gamma_hat,tau_hat,sd_u,sd_v,confid=confid, bootstrap=TRUE, b=b, seed=seed)
+  #bces start
+  n1 <- length(gamma_hat)
+  n2 <- length(tau_hat)
+  n3 <- length(sd_u)
+  n4 <- length(sd_v)
+  if ( (n1 < 2) |(n2 < 2)|(n3 < 2)|(n4 < 2))
+    stop("The length of inputs should be larger than 1")
+  if(length(unique(c(n1,n2,n3,n4)))>1)
+    stop("The length of inputs should be equal")
+  if (!is.null(seed))
+    set.seed(seed)
+  tau_bar <- mean(tau_hat)
+  gamma_bar <- mean(gamma_hat)
+  sigma_u <- sd_u^2
+  sigma_v <- sd_v^2
+  nume <- sum((gamma_hat-gamma_bar)*tau_hat)
+  deno <- sum((gamma_hat-gamma_bar)^2) - sum(sigma_u)
+  beta_bces <- nume/deno # beta
+  alpha_bces <- tau_bar - beta_bces*gamma_bar # alpha
+  #bces end
 
   mod_sim <- simex::simex(lm(tau_hat~gamma_hat,x=TRUE,y=TRUE),B=b,
                    measurement.error = sd_u,
                    SIMEXvariable="gamma_hat",fitting.method ="quad",asymptotic="FALSE")
 
-  beta_bces <- mod$beta_bces
-  alpha_bces <- mod$alpha_bces
 
   beta_sim <- summary(mod_sim)[[1]][[1]][2,1]
   alpha_sim <- summary(mod_sim)[[1]][[1]][1,1]
@@ -65,13 +82,13 @@ plot_mech <- function(gamma_hat,tau_hat,sd_u,sd_v,confid=0.05,b=1000,fit="SIMEX"
     ggplot2::geom_errorbar(ggplot2::aes(ymin=tau_hat-qnorm(confid/2,lower.tail=FALSE)*sd_v, ymax=tau_hat+qnorm(confid/2,lower.tail=FALSE)*sd_v), colour=col_error_bar, width=0,alpha=0.5) +
     ggplot2::geom_errorbarh(ggplot2::aes(xmin=gamma_hat-qnorm(confid/2,lower.tail=FALSE)*sd_u, xmax=gamma_hat+qnorm(confid/2,lower.tail=FALSE)*sd_u), colour=col_error_bar, height=0,alpha=0.5) +
     ggplot2::geom_point(alpha=1,colour=col_point) +
-    ggplot2::geom_abline(data=dat_est,ggplot2::aes(intercept=alpha, slope=beta,colour=Estimators),size=1, show.legend=legend)+
-    #    ggplot2::geom_abline(dat_est,ggplot2::aes(intercept=alpha_sim, slope=beta_sim),colour=group,size=1, show.legend=TRUE)+
+    ggplot2::geom_abline(data=dat_est,ggplot2::aes(intercept=alpha, slope=beta,colour=Estimators),size=1, show.legend=TRUE)+
+#    ggplot2::geom_abline(dat_est,ggplot2::aes(intercept=alpha_sim, slope=beta_sim),colour=group,size=1, show.legend=TRUE)+
     ggplot2::scale_color_manual(values = col_line )+
     ggplot2::labs(x=xlab, y=ylab)+
     ggplot2::theme_light()+
-    ggplot2::theme(axis.text=element_text(size=size_text),
-                   axis.title=element_text(size=size_title,face="bold"))+
-    ggplot2::theme(legend.text=element_text(size=size_legend))
+    ggplot2::theme(axis.text=ggplot2::element_text(size=size_text),
+                   axis.title=ggplot2::element_text(size=size_title,face="bold"))+
+    ggplot2::theme(legend.text=ggplot2::element_text(size=size_legend))
 
 }

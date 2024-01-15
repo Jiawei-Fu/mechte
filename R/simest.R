@@ -17,14 +17,12 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' data(example_dat)  # input data
 #' example_dat <- as.data.frame(example_dat)
 #' simest(example_dat$gamma_hat,example_dat$tau_hat,sd_u) # simex estimator
 #'
 #' tmp <- simest(example_dat$gamma_hat,example_dat$tau_hat,example_dat$sd_u) # save the result
 #' tmp$beta  # extract the value
-#'}
 simest <- function(gamma_hat,tau_hat,sd_u,b=1000){
 
   n1 <- length(gamma_hat)
