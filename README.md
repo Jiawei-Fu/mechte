@@ -11,7 +11,9 @@ devtools::install_github("Jiawei-Fu/mechte")
 library(mechte)
 ```
 
-To estimate the average mediation effects using the package, it is assumed that researchers have access to multiple estimated average treatment effects (ATE) for both the mediator and the outcome, along with the corresponding standard errors. These ATEs can be derived using causal trees/forests or through meta-analysis techniques, as discussed in the working paper 'Fu (2023). For those interested in employing causal forests to find subgroups with significant treatment effects, a useful resource is the tutorial available at https://ml-in-econ.appspot.com/lab3.html. Within our package, we provide a pseudo-dataset containing such estimates to facilitate the estimation process. This allows users to familiarize themselves with the package's functionality and to practice the estimation process before applying it to their own data. 
+To estimate the average mediation effects using the package, it is assumed that researchers have access to multiple estimated average treatment effects (ATE) for both the mediator and the outcome, along with the corresponding standard errors. These ATEs can be derived using causal trees/forests or through meta-analysis techniques, as discussed in the working paper 'Fu (2023). For those interested in employing causal forests to find subgroups with significant treatment effects, a useful resource is the tutorial available at https://ml-in-econ.appspot.com/lab3.html. 
+
+Within our package, we provide a pseudo-dataset containing such estimates to facilitate the estimation process. This allows users to familiarize themselves with the package's functionality and to practice the estimation process before applying it to their own data. 
 
 ```r
 data(example_dat)
