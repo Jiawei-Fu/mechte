@@ -7,11 +7,11 @@
 simest(gamma_hat, tau_hat, sd_u, b = 1000)
 }
 \arguments{
-\item{gamma_hat}{a vector of the effect of the treatment on the mediator.}
+\item{gamma_hat}{a vector of the treatment effect on the mediator.}
 
-\item{tau_hat}{a vector of the total effect of the treatment on the outcome.}
+\item{tau_hat}{a vector of the total treatment effect on the outcome.}
 
-\item{sd_u}{a vector of the standard error of gamma, the effect of the treatment on the mediator.}
+\item{sd_u}{a vector of the standard error of \code{gamma_hat}, the treatment effect on the mediator.}
 
 \item{b}{the number of bootstrap replicates. The default number is 1000.}
 }
@@ -31,7 +31,10 @@ simest(gamma_hat, tau_hat, sd_u, b = 1000)
 \code{p_beta} P-value of beta.
 }
 \description{
-This function estimates the average mediation effects with the SIMEX estimator, following the methodology outlined in Fu (2023). In general, the method transforms the challenging mediation problem into a simple linear regression problem without compromising the non-parametric nature. To implement the SIMEX estimator, we assume that researchers have obtained multiple estimated average treatment effects on the mediator and outcome, and corresponding standard errors. To get those average treatment effects, one can use causal trees or meta-analysis, as described by Fu (2023). With those estimates as inputs, this function returns average mediation effects.
+This function estimates the average mediation effects with the SIMEX estimator, following the methodology outlined in Fu (2023). In general, the method transforms the challenging mediation problem into a simple linear regression problem without compromising the non-parametric nature. To implement the SIMEX estimator, we assume that researchers have obtained multiple estimated average treatment effects on the mediator and outcome, and corresponding standard errors. To get those average treatment effects, one can use causal trees/forests or meta-analysis, as described by Fu (2023). With those estimates as inputs, this function returns average mediation effects.
+}
+\details{
+Total treatment effect on the outcome, denoted by \code{tau}, is decomposed into \verb{tau = alpha + beta gamma + epsilon}, where \code{alpha} is the expectation of the average direct effects (can be regarded as the intercept), \code{epsilon} is the error term, and \verb{beta gamma} is the average mediation effect where \code{gamma} is the average treatment effect on the mediator and \code{beta} is a parameter we want to estimate. Function \code{simest} estimates \code{beta} and \code{alpha}.
 }
 \examples{
 data(example_dat)  # input data

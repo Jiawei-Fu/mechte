@@ -3,10 +3,10 @@
 #' @description This function is designed to plot the figure of average mediation effects as outlined in Fu (2023). In general, the method transforms the challenging mediation problem into a simple linear regression problem without compromising the non-parametric nature. The resulting plot will display the observations of average treatment effects on both the mediator and the outcome, their corresponding standard errors, and the estimated regression line. The slope of this regression line represents the key parameter `beta`, which indicates the rate of change in the pure indirect effect relative to a one-unit change in the average treatment effects on the mediator. This parameter is crucial for constructing the average mediation effects.
 #'
 #'
-#' @param gamma_hat a vector of the effect of the treatment on the mediator.
-#' @param tau_hat a vector of the total effect of the treatment on the outcome.
-#' @param sd_u a vector of the standard error of gamma, the effect of the treatment on the mediator.
-#' @param sd_v a vector of the standard error of tau, the total effect of the treatment on the outcome.
+#' @param gamma_hat a vector of the treatment effect on the mediator.
+#' @param tau_hat a vector of the total treatment effect on the outcome.
+#' @param sd_u a vector of the standard error of `gamma_hat`, the treatment effect on the mediator.
+#' @param sd_v a vector of the standard error of `tau_hat`, the total treatment effect on the outcome.
 #' @param confid the size of the test. The default is 0.05.
 #' @param b the number of bootstrap replicates. The default number is 1000.
 #' @param fit the estimator to use. Default is "SIMEX"; additional options are "BCES" or "both". However, we suggest using "SIMEX".

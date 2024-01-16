@@ -1,10 +1,12 @@
 #' @title Causal Mediation with BCES estimator
 #' @description This function estimates the average mediation effects with the BCES estimator, following the methodology outlined in Fu (2023).. However, it's important to note that we recommend against using this function for your analyses. Instead, we suggest employing the function `simest`, which is likely to yield more reliable and accurate results.
 #'
-#' @param gamma_hat a vector of the effect of the treatment on the mediator.
-#' @param tau_hat a vector of the total effect of the treatment on the outcome.
-#' @param sd_u a vector of the standard error of gamma, the effect of the treatment on the mediator.
-#' @param sd_v a vector of the standard error of tau, the total effect of the treatment on the outcome.
+#'@details Total treatment effect on the outcome, denoted by `tau`, is decomposed into `tau = alpha + beta gamma + epsilon`, where `alpha` is the expectation of the average direct effects (can be regarded as the intercept), `epsilon` is the error term, and `beta gamma` is the average mediation effect where `gamma` is the average treatment effect on the mediator and `beta` is a parameter we want to estimate. Function `bces` estimates `beta` and `alpha`.
+#'
+#' @param gamma_hat a vector of the treatment effect on the mediator.
+#' @param tau_hat a vector of the total treatment effect on the outcome.
+#' @param sd_u a vector of the standard error of `gamma_hat`, the treatment effect on the mediator.
+#' @param sd_v a vector of the standard error of `tau_hat`, the total treatment effect on the outcome.
 #' @param confid the size of the test. The default is 0.05.
 #' @param bootstrap logical value. Whether to use bootstrap.
 #' @param b the number of bootstrap replicates. The default number is 1000.

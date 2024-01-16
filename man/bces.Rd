@@ -16,13 +16,13 @@ bces(
 )
 }
 \arguments{
-\item{gamma_hat}{a vector of the effect of the treatment on the mediator.}
+\item{gamma_hat}{a vector of the treatment effect on the mediator.}
 
-\item{tau_hat}{a vector of the total effect of the treatment on the outcome.}
+\item{tau_hat}{a vector of the total treatment effect on the outcome.}
 
-\item{sd_u}{a vector of the standard error of gamma, the effect of the treatment on the mediator.}
+\item{sd_u}{a vector of the standard error of \code{gamma_hat}, the treatment effect on the mediator.}
 
-\item{sd_v}{a vector of the standard error of tau, the total effect of the treatment on the outcome.}
+\item{sd_v}{a vector of the standard error of \code{tau_hat}, the total treatment effect on the outcome.}
 
 \item{confid}{the size of the test. The default is 0.05.}
 
@@ -61,6 +61,9 @@ boot_p_beta P-value of beta based on bootstrap.
 }
 \description{
 This function estimates the average mediation effects with the BCES estimator, following the methodology outlined in Fu (2023).. However, it's important to note that we recommend against using this function for your analyses. Instead, we suggest employing the function \code{simest}, which is likely to yield more reliable and accurate results.
+}
+\details{
+Total treatment effect on the outcome, denoted by \code{tau}, is decomposed into \verb{tau = alpha + beta gamma + epsilon}, where \code{alpha} is the expectation of the average direct effects (can be regarded as the intercept), \code{epsilon} is the error term, and \verb{beta gamma} is the average mediation effect where \code{gamma} is the average treatment effect on the mediator and \code{beta} is a parameter we want to estimate. Function \code{bces} estimates \code{beta} and \code{alpha}.
 }
 \examples{
 \dontrun{

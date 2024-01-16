@@ -1,9 +1,11 @@
 #' @title Causal Mediation with SIMEX estimator
-#' @description This function estimates the average mediation effects with the SIMEX estimator, following the methodology outlined in Fu (2023). In general, the method transforms the challenging mediation problem into a simple linear regression problem without compromising the non-parametric nature. To implement the SIMEX estimator, we assume that researchers have obtained multiple estimated average treatment effects on the mediator and outcome, and corresponding standard errors. To get those average treatment effects, one can use causal trees or meta-analysis, as described by Fu (2023). With those estimates as inputs, this function returns average mediation effects.
+#' @description This function estimates the average mediation effects with the SIMEX estimator, following the methodology outlined in Fu (2023). In general, the method transforms the challenging mediation problem into a simple linear regression problem without compromising the non-parametric nature. To implement the SIMEX estimator, we assume that researchers have obtained multiple estimated average treatment effects on the mediator and outcome, and corresponding standard errors. To get those average treatment effects, one can use causal trees/forests or meta-analysis, as described by Fu (2023). With those estimates as inputs, this function returns average mediation effects.
 #'
-#' @param gamma_hat a vector of the effect of the treatment on the mediator.
-#' @param tau_hat a vector of the total effect of the treatment on the outcome.
-#' @param sd_u a vector of the standard error of gamma, the effect of the treatment on the mediator.
+#' @details Total treatment effect on the outcome, denoted by `tau`, is decomposed into `tau = alpha + beta gamma + epsilon`, where `alpha` is the expectation of the average direct effects (can be regarded as the intercept), `epsilon` is the error term, and `beta gamma` is the average mediation effect where `gamma` is the average treatment effect on the mediator and `beta` is a parameter we want to estimate. Function `simest` estimates `beta` and `alpha`.
+#'
+#' @param gamma_hat a vector of the treatment effect on the mediator.
+#' @param tau_hat a vector of the total treatment effect on the outcome.
+#' @param sd_u a vector of the standard error of `gamma_hat`, the treatment effect on the mediator.
 #' @param b the number of bootstrap replicates. The default number is 1000.
 #'
 #' @returns `ave_med` the estimated average mediation effects.

@@ -25,13 +25,13 @@ plot_mech(
 )
 }
 \arguments{
-\item{gamma_hat}{a vector of the effect of the treatment on the mediator.}
+\item{gamma_hat}{a vector of the treatment effect on the mediator.}
 
-\item{tau_hat}{a vector of the total effect of the treatment on the outcome.}
+\item{tau_hat}{a vector of the total treatment effect on the outcome.}
 
-\item{sd_u}{a vector of the standard error of gamma, the effect of the treatment on the mediator.}
+\item{sd_u}{a vector of the standard error of \code{gamma_hat}, the treatment effect on the mediator.}
 
-\item{sd_v}{a vector of the standard error of tau, the total effect of the treatment on the outcome.}
+\item{sd_v}{a vector of the standard error of \code{tau_hat}, the total treatment effect on the outcome.}
 
 \item{confid}{the size of the test. The default is 0.05.}
 
