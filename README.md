@@ -25,12 +25,14 @@ example_dat <- as.data.frame(example_dat)
 The following code snippet demonstrates the implementation of the SIMEX estimator in R. `gamma_hat` is the vector of average treatment effects on the mediator, `tau_hat` is the vector of average treatment effects on the outcome, and `sd_u` is the vector of the standard error of `gamma_hat`. (SIMEX does not need the standard error of `tau_hat`, which is the `sd_v`.) 
 
 ```r
+set.seed(1)
 simest(example_dat$gamma_hat,example_dat$tau_hat,example_dat$sd_u)
 ```
 
 We can also visualize the result with following code. The resulting plot will display the observations of average treatment effects on both the mediator and the outcome, their corresponding standard errors, and the estimated regression line. The slope of this regression line represents the key parameter `beta`, which indicates the rate of change in the pure indirect effect relative to a one-unit change in the average treatment effects on the mediator. This parameter is crucial for constructing the average mediation effects.
 
 ```r
+set.seed(1)
 plot_mech(example_dat$gamma_hat,example_dat$tau_hat,example_dat$sd_u,example_dat$sd_v)
 ```
 
