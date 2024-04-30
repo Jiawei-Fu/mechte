@@ -6,9 +6,11 @@
 #' @param gamma_hat a vector of the treatment effect on the mediator.
 #' @param tau_hat a vector of the total treatment effect on the outcome.
 #' @param sd_u a vector of the standard error of `gamma_hat`, the treatment effect on the mediator.
+#' @param prop the proportion of each subgroups. The default number 1 means equal proportion.
 #' @param b the number of bootstrap replicates. The default number is 1000.
+#' @param alpha significant level. The default number is 0.05.
 #'
-#' @returns `amce` the estimated average mediation effects.
+#' @returns `acme` the estimated average causal mediation effects.
 #' @returns `beta` estimated value of beta.
 #' @returns `alpha` estimated value of alpha.
 #' @returns `se_alpha` standard error of the estimated alpha.
@@ -50,6 +52,9 @@ simest <- function(gamma_hat,tau_hat,sd_u,prop=1,alpha=0.05,b=1000){
                    measurement.error = sd_u,
                    SIMEXvariable="gamma_hat",fitting.method ="quad",asymptotic="FALSE")
 
+  beta_p <- summary(mod_sim)$coefficients$jackknife["gamma_hat",4]
+  beta_sd <- summary(mod_sim)$coefficients$jackknife["gamma_hat",2]
+  beta <- mod_sim$coefficients[2]
 
   ### inference
 
@@ -109,9 +114,9 @@ simest <- function(gamma_hat,tau_hat,sd_u,prop=1,alpha=0.05,b=1000){
   printCoefmat(summary(mod_sim)$coefficients$jackknife, P.values = TRUE, has.Pvalue = TRUE)
 
   cat("\n")
-  cat("The average mediation effect (AMCE) is",ave_med, "; \n")
-  cat("The at least",1-alpha,"Confidence Interval of AMCE is",c(ci_low_eta,ci_up_eta), "; \n")
-  cat("The test of Null Hypothesis AMCE=0 at level",alpha,"is",null_test,", p-value is",p_value, " \n")
+  cat("The average causal mediation effect (ACME) is",ave_med, "; \n")
+  cat("The at least",1-alpha,"Confidence Interval of ACME is",c(ci_low_eta,ci_up_eta), "; \n")
+  cat("The test of Null Hypothesis ACME=0 at level",alpha,"is",null_test,", p-value is",p_value, " \n")
 
 
   # for extract
@@ -127,7 +132,7 @@ simest <- function(gamma_hat,tau_hat,sd_u,prop=1,alpha=0.05,b=1000){
   output2$p_beta <- summary(mod_sim)$coefficients$jackknife[2,4]
   output2$p_alpha <- summary(mod_sim)$coefficients$jackknife[1,4]
 
-  output2$amce <- ave_med
+  output2$acme <- ave_med
 
   output2$p_value_gamma <- p_value_gamma
   output2$p_value <- p_value #eta

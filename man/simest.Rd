@@ -4,7 +4,7 @@
 \alias{simest}
 \title{Causal Mediation with SIMEX estimator}
 \usage{
-simest(gamma_hat, tau_hat, sd_u, b = 1000)
+simest(gamma_hat, tau_hat, sd_u, prop = 1, alpha = 0.05, b = 1000)
 }
 \arguments{
 \item{gamma_hat}{a vector of the treatment effect on the mediator.}
@@ -16,7 +16,7 @@ simest(gamma_hat, tau_hat, sd_u, b = 1000)
 \item{b}{the number of bootstrap replicates. The default number is 1000.}
 }
 \value{
-\code{ave_med} the estimated average mediation effects.
+\code{acme} the estimated average causal mediation effects.
 
 \code{beta} estimated value of beta.
 
@@ -29,6 +29,10 @@ simest(gamma_hat, tau_hat, sd_u, b = 1000)
 \code{p_alpha} P-value of alpha.
 
 \code{p_beta} P-value of beta.
+
+\code{ci_up_eta} the lower limit of the at least (1-\code{alpha})\% CI
+
+\code{ci_low_eta} the lower limit of the at least (1-\code{alpha})\% CI
 }
 \description{
 This function estimates the average mediation effects with the SIMEX estimator, following the methodology outlined in Fu (2023). In general, the method transforms the challenging mediation problem into a simple linear regression problem without compromising the non-parametric nature. To implement the SIMEX estimator, we assume that researchers have obtained multiple estimated average treatment effects on the mediator and outcome, and corresponding standard errors. To get those average treatment effects, one can use causal trees/forests or meta-analysis, as described by Fu (2023). With those estimates as inputs, this function returns average mediation effects.
