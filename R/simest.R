@@ -8,14 +8,15 @@
 #' @param sd_u a vector of the standard error of `gamma_hat`, the treatment effect on the mediator.
 #' @param b the number of bootstrap replicates. The default number is 1000.
 #'
-#' @returns `ave_med` the estimated average mediation effects.
+#' @returns `amce` the estimated average mediation effects.
 #' @returns `beta` estimated value of beta.
 #' @returns `alpha` estimated value of alpha.
 #' @returns `se_alpha` standard error of the estimated alpha.
 #' @returns `se_beta` standard error of the estimated beta.
 #' @returns `p_alpha` P-value of alpha.
 #' @returns `p_beta` P-value of beta.
-#'
+#' @returns `ci_up_eta` the lower limit of the at least (1-`alpha`)% CI
+#' @returns `ci_low_eta` the lower limit of the at least (1-`alpha`)% CI
 #'
 #' @export
 #'
@@ -29,7 +30,9 @@
 #' tmp$ave_med  # extract the value
 #'
 #' @references Jiawei Fu. 2013. "Extract Mechanisms from Heterogeneous Effects: A New Identification Strategy for Mediation Analysis" \emph{Working Paper}.
-simest <- function(gamma_hat,tau_hat,sd_u,b=1000){
+simest <- function(gamma_hat,tau_hat,sd_u,prop=1,alpha=0.05,b=1000){
+
+  if(sum(is.na(gamma_hat))>0){cat("gamma has NA")}
 
   n1 <- length(gamma_hat)
   n2 <- length(tau_hat)
@@ -47,16 +50,69 @@ simest <- function(gamma_hat,tau_hat,sd_u,b=1000){
                    measurement.error = sd_u,
                    SIMEXvariable="gamma_hat",fitting.method ="quad",asymptotic="FALSE")
 
+
+  ### inference
+
+  if(prop==1){
+    prop_new <- rep(1/n1,n1)
+    gamma_new <- prop_new*gamma_hat
+    gamma_sd_new <- prop_new*sd_u}
+  if(prop!=1 & length(prop)!=n1){stop("Length of prop is not equal to the length of gamma.")}
+  if(prop!=1 & sum(prop)!=n1){stop("Sum of the prop is not equal to 1.")}
+  if(prop!=1 & sum(prop<=0)>0){stop("Prop has non positive terms.")}
+  if(prop!=1){
+    gamma_new <- prop*gamma_hat
+    gamma_sd_new <- prop*sd_u}
+
+  z_gamma_mean <- sum(gamma_new,na.rm = T)
+  z_gamma_var <- sum(gamma_sd_new^2,na.rm = T)
+  z_gamma_sd <- sqrt(z_gamma_var)
+
+  # p value two sided
+
+  p_value_gamma <- 2*pnorm(-abs(z_gamma_mean/z_gamma_sd))
+
+  null_test <- NA
+
+  if( (p_value_gamma<=alpha) & (beta_p<=alpha) ){
+    null_test <- "rejected"
+  }else{null_test <-  "not rejected"}
+
+  p_value <- min(p_value_gamma,beta_p)  ### our definition of p value under H0
+
+  # 1-alpha interval
+  # we need sqrt(1-alpha) interval for gamma and beta
+
+  ci_up_gamma <- z_gamma_mean + qnorm((1+sqrt(1-alpha))/2)*z_gamma_sd
+  ci_low_gamma <- z_gamma_mean - qnorm((1+sqrt(1-alpha))/2)*z_gamma_sd
+
+  ci_up_beta <- beta + qnorm((1+sqrt(1-alpha))/2)*beta_sd
+  ci_low_beta <- beta - qnorm((1+sqrt(1-alpha))/2)*beta_sd
+
+  ### CI for eta
+
+  ci_up_eta <- ci_low_eta <-  NA
+
+  tmp_a <- ci_up_gamma*ci_up_beta
+  tmp_b <- ci_up_gamma*ci_low_beta
+  tmp_c <- ci_low_gamma*ci_up_beta
+  tmp_d <- ci_low_gamma*ci_low_beta
+
+  ci_up_eta <- max(tmp_a,tmp_b,tmp_c,tmp_d)
+  ci_low_eta <- min(tmp_a,tmp_b,tmp_c,tmp_d)
+
+  ave_med <- z_gamma_mean*beta
+
   ### output
 
   cat("The regression outcomes with SIMEX:", "\n")
   printCoefmat(summary(mod_sim)$coefficients$jackknife, P.values = TRUE, has.Pvalue = TRUE)
 
-  tmp_beta <- mod_sim$coefficients[2]
-  ave_med <- mean(tmp_beta*gamma_hat)
-
   cat("\n")
-  cat("The average mediation effect is",ave_med, "\n")
+  cat("The average mediation effect (AMCE) is",ave_med, "; \n")
+  cat("The at least",1-alpha,"Confidence Interval of AMCE is",c(ci_low_eta,ci_up_eta), "; \n")
+  cat("The test of Null Hypothesis AMCE=0 at level",alpha,"is",null_test,", p-value is",p_value, " \n")
+
 
   # for extract
 
@@ -71,7 +127,12 @@ simest <- function(gamma_hat,tau_hat,sd_u,b=1000){
   output2$p_beta <- summary(mod_sim)$coefficients$jackknife[2,4]
   output2$p_alpha <- summary(mod_sim)$coefficients$jackknife[1,4]
 
-  output2$ave_med <- ave_med
+  output2$amce <- ave_med
+
+  output2$p_value_gamma <- p_value_gamma
+  output2$p_value <- p_value #eta
+  output2$ci_up_eta <- ci_up_eta
+  output2$ci_low_eta <- ci_low_eta
 
   invisible(output2)
 }
