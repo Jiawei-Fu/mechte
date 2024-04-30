@@ -19,7 +19,7 @@
 #' @returns `p_beta` P-value of beta.
 #' @returns `ci_up_eta` the lower limit of the at least (1-`alpha`)% CI
 #' @returns `ci_low_eta` the lower limit of the at least (1-`alpha`)% CI
-#'
+#' @returns `dat_sub` the hypotheis test and at least (1-`alpha`)% CI for each subgroup
 #' @export
 #'
 #' @examples
@@ -31,7 +31,7 @@
 #' tmp <- simest(example_dat$gamma_hat,example_dat$tau_hat,example_dat$sd_u)
 #' tmp$ave_med  # extract the value
 #'
-#' @references Jiawei Fu. 2013. "Extract Mechanisms from Heterogeneous Effects: A New Identification Strategy for Mediation Analysis" \emph{Working Paper}.
+#' @references Jiawei Fu. 2024. "Extract Mechanisms from Heterogeneous Effects: A New Identification Strategy for Mediation Analysis" \emph{Working Paper}.
 simest <- function(gamma_hat,tau_hat,sd_u,prop=1,alpha=0.05,b=1000){
 
   if(sum(is.na(gamma_hat))>0){cat("gamma has NA")}
@@ -108,6 +108,42 @@ simest <- function(gamma_hat,tau_hat,sd_u,prop=1,alpha=0.05,b=1000){
 
   ave_med <- z_gamma_mean*beta
 
+
+  ##### CI and hypothesis test for each group
+
+  rec_sub_test <- rep(NA,n1)
+  p_value_subgroup <- 2*pnorm(-abs(gamma_hat/sd_u))
+
+  for (i in 1:n1) {
+    if( (p_value_subgroup[i]<=alpha) & (beta_p<=alpha) ){
+      rec_sub_test[i] <- "rejected"
+    }else{rec_sub_test[i] <-  "not rejected"}
+  }
+
+
+  dat_sub <- data.frame("group" = 1:n1,
+                        "gamma" = gamma_hat,
+                        "test" = rec_sub_test,
+                        "p-value" = NA,
+                        "ci_up" = NA,
+                        "ci_low" =NA)
+
+  ci_up_subgamma <- gamma_hat + qnorm((1+sqrt(1-alpha))/2)*sd_u
+  ci_low_subgamma <- gamma_hat - qnorm((1+sqrt(1-alpha))/2)*sd_u
+
+  tmp_sub_a <- ci_up_subgamma*ci_up_beta
+  tmp_sub_b <- ci_up_subgamma*ci_low_beta
+  tmp_sub_c <- ci_low_subgamma*ci_up_beta
+  tmp_sub_d <- ci_low_subgamma*ci_low_beta
+
+  for (i in 1:n1) {
+    dat_sub$ci_up[i] <- max(tmp_sub_a[i],tmp_sub_b[i],tmp_sub_c[i],tmp_sub_d[i])
+    dat_sub$ci_low[i] <- min(tmp_sub_a[i],tmp_sub_b[i],tmp_sub_c[i],tmp_sub_d[i])
+    dat_sub$p-value[i] <- max(p_value_subgroup[i],beta_p)
+  }
+
+
+
   ### output
 
   cat("The regression outcomes with SIMEX:", "\n")
@@ -138,6 +174,8 @@ simest <- function(gamma_hat,tau_hat,sd_u,prop=1,alpha=0.05,b=1000){
   output2$p_value <- p_value #eta
   output2$ci_up_eta <- ci_up_eta
   output2$ci_low_eta <- ci_low_eta
+
+  output2$dat_sub <- dat_sub
 
   invisible(output2)
 }
