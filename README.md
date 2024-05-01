@@ -26,8 +26,11 @@ The following code snippet demonstrates the implementation of the SIMEX estimato
 
 ```r
 set.seed(1)
-simest(example_dat$gamma_hat,example_dat$tau_hat,example_dat$sd_u)
+tmp <- simest(example_dat$gamma_hat,example_dat$tau_hat,example_dat$sd_u)
+tmp$dat_sub
 ```
+The output also shows the average causal mediation effects (ACME), hypotheis testing, p-value, and at least (1-`alpha`) % Confidence Interval. The `dat_sub` shows the amce for each groups.
+
 
 We can also visualize the result with following code. The resulting plot will display the observations of average treatment effects on both the mediator and the outcome, their corresponding standard errors, and the estimated regression line. The slope of this regression line represents the key parameter `beta`, which indicates the rate of change in the pure indirect effect relative to a one-unit change in the average treatment effects on the mediator. This parameter is crucial for constructing the average mediation effects.
 
