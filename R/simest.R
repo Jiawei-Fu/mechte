@@ -59,14 +59,15 @@ simest <- function(gamma_hat,tau_hat,sd_u,prop=1,alpha=0.05,b=1000){
 
   ### inference
 
-  if(prop==1){
+  if(length(prop)==1 & prop[1]==1){
     prop_new <- rep(1/n1,n1)
     gamma_new <- prop_new*gamma_hat
     gamma_sd_new <- prop_new*sd_u}
-  if(prop!=1 & length(prop)!=n1){stop("Length of prop is not equal to the length of gamma.")}
-  if(prop!=1 & sum(prop)!=n1){stop("Sum of the prop is not equal to 1.")}
-  if(prop!=1 & sum(prop<=0)>0){stop("Prop has non positive terms.")}
-  if(prop!=1){
+  if(length(prop)==1 & prop[1]!=1){stop("The proportion has one value and is not 1; it should be a vetor or 1")}
+  if(length(prop)!=1 & length(prop)!=n1){stop("Length of prop is not equal to the length of gamma.")}
+  if(length(prop)!=1 & sum(prop)!=n1){cat("Sum of the prop is not equal to 1.")}
+  if(length(prop)!=1 & sum(prop<=0)>0){stop("Prop has non positive terms.")}
+  if(length(prop)!=1 ){
     gamma_new <- prop*gamma_hat
     gamma_sd_new <- prop*sd_u}
 
