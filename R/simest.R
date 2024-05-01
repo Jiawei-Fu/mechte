@@ -30,6 +30,7 @@
 #' # assign the result to the tmp
 #' tmp <- simest(example_dat$gamma_hat,example_dat$tau_hat,example_dat$sd_u)
 #' tmp$ave_med  # extract the value
+#' tmp$dat_sub  # extract the subgroup information
 #'
 #' @references Jiawei Fu. 2024. "Extract Mechanisms from Heterogeneous Effects: A New Identification Strategy for Mediation Analysis" \emph{Working Paper}.
 simest <- function(gamma_hat,tau_hat,sd_u,prop=1,alpha=0.05,b=1000){
@@ -124,7 +125,7 @@ simest <- function(gamma_hat,tau_hat,sd_u,prop=1,alpha=0.05,b=1000){
   dat_sub <- data.frame("group" = 1:n1,
                         "gamma" = gamma_hat,
                         "test" = rec_sub_test,
-                        "p-value" = NA,
+                        "p_value" = NA,
                         "ci_up" = NA,
                         "ci_low" =NA)
 
@@ -139,7 +140,7 @@ simest <- function(gamma_hat,tau_hat,sd_u,prop=1,alpha=0.05,b=1000){
   for (i in 1:n1) {
     dat_sub$ci_up[i] <- max(tmp_sub_a[i],tmp_sub_b[i],tmp_sub_c[i],tmp_sub_d[i])
     dat_sub$ci_low[i] <- min(tmp_sub_a[i],tmp_sub_b[i],tmp_sub_c[i],tmp_sub_d[i])
-    dat_sub$p-value[i] <- max(p_value_subgroup[i],beta_p)
+    dat_sub$p_value[i] <- max(p_value_subgroup[i],beta_p)
   }
 
 

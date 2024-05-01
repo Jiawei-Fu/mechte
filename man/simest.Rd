@@ -13,6 +13,10 @@ simest(gamma_hat, tau_hat, sd_u, prop = 1, alpha = 0.05, b = 1000)
 
 \item{sd_u}{a vector of the standard error of \code{gamma_hat}, the treatment effect on the mediator.}
 
+\item{prop}{the proportion of each subgroups. The default number 1 means equal proportion.}
+
+\item{alpha}{significant level. The default number is 0.05.}
+
 \item{b}{the number of bootstrap replicates. The default number is 1000.}
 }
 \value{
@@ -33,6 +37,8 @@ simest(gamma_hat, tau_hat, sd_u, prop = 1, alpha = 0.05, b = 1000)
 \code{ci_up_eta} the lower limit of the at least (1-\code{alpha})\% CI
 
 \code{ci_low_eta} the lower limit of the at least (1-\code{alpha})\% CI
+
+\code{dat_sub} the hypotheis test and at least (1-\code{alpha})\% CI for each subgroup
 }
 \description{
 This function estimates the average mediation effects with the SIMEX estimator, following the methodology outlined in Fu (2023). In general, the method transforms the challenging mediation problem into a simple linear regression problem without compromising the non-parametric nature. To implement the SIMEX estimator, we assume that researchers have obtained multiple estimated average treatment effects on the mediator and outcome, and corresponding standard errors. To get those average treatment effects, one can use causal trees/forests or meta-analysis, as described by Fu (2023). With those estimates as inputs, this function returns average mediation effects.
@@ -51,5 +57,5 @@ tmp$ave_med  # extract the value
 
 }
 \references{
-Jiawei Fu. 2013. "Extract Mechanisms from Heterogeneous Effects: A New Identification Strategy for Mediation Analysis" \emph{Working Paper}.
+Jiawei Fu. 2024. "Extract Mechanisms from Heterogeneous Effects: A New Identification Strategy for Mediation Analysis" \emph{Working Paper}.
 }
