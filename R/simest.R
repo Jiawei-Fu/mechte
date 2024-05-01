@@ -19,6 +19,9 @@
 #' @returns `p_beta` P-value of beta.
 #' @returns `ci_up_eta` the lower limit of the at least (1-`alpha`)% CI
 #' @returns `ci_low_eta` the lower limit of the at least (1-`alpha`)% CI
+#' @returns `Q` Cochran’s Q for heterogeneity test
+#' @returns `pvalue_q` pvalue for the Cochran's Q for heterogeneity test
+#' @returns `I_2` Higgins & Thompson's I^2 for heterogeneity test
 #' @returns `dat_sub` the hypotheis test and at least (1-`alpha`)% CI for each subgroup
 #' @export
 #'
@@ -47,6 +50,22 @@ simest <- function(gamma_hat,tau_hat,sd_u,prop=1,alpha=0.05,b=1000){
   if(length(unique(c(n1,n2,n3)))>1)
     stop("The length of inputs should be equal")
 
+
+  ###### HETEROGENEITY for gamma
+
+  w <- 1/(sd_u)^2
+  theta_fix <- sum(w*gamma_hat)/sum(w)
+  Q <- sum((w)*(gamma_hat-theta_fix)^2)
+
+  pvalue_q <- pchisq(Q, n1-1, ncp = 0, lower.tail=FALSE)
+
+  tmp_i <- NA
+  if(Q-n1+1<0){tmp_i <- 0}else{tmp_i <- Q-n1+1}
+
+  I_2 <- tmp_i/Q
+
+  #### ESTIMATION
+
   mod <- lm(tau_hat~gamma_hat,x=TRUE,y=TRUE)
 
   mod_sim <- simex::simex(mod,B=b,
@@ -63,9 +82,9 @@ simest <- function(gamma_hat,tau_hat,sd_u,prop=1,alpha=0.05,b=1000){
     prop_new <- rep(1/n1,n1)
     gamma_new <- prop_new*gamma_hat
     gamma_sd_new <- prop_new*sd_u}
-  if(length(prop)==1 & prop[1]!=1){stop("The proportion has one value and is not 1; it should be a vetor or 1")}
+  if(length(prop)==1 & prop[1]!=1){stop("The proportion has one value and is not 1; it should be a vetor or 1 ")}
   if(length(prop)!=1 & length(prop)!=n1){stop("Length of prop is not equal to the length of gamma.")}
-  if(length(prop)!=1 & sum(prop)!=n1){cat("Sum of the prop is not equal to 1.")}
+  if(length(prop)!=1 & sum(prop)!=n1){cat("Sum of the prop is not equal to 1. \n")}
   if(length(prop)!=1 & sum(prop<=0)>0){stop("Prop has non positive terms.")}
   if(length(prop)!=1 ){
     gamma_new <- prop*gamma_hat
@@ -152,8 +171,11 @@ simest <- function(gamma_hat,tau_hat,sd_u,prop=1,alpha=0.05,b=1000){
   printCoefmat(summary(mod_sim)$coefficients$jackknife, P.values = TRUE, has.Pvalue = TRUE)
 
   cat("\n")
+  cat("Heterogenity Test: Cochran’s Q",Q, "p-value is",pvalue_q, "; \n")
+  cat("Heterogenity Test: Higgins & Thompson’s I^2 is",I_2*100, "%; \n")
+
   cat("The average causal mediation effect (ACME) is",ave_med, "; \n")
-  cat("The at least",1-alpha,"Confidence Interval of ACME is",c(ci_low_eta,ci_up_eta), "; \n")
+  cat("The at least",(1-alpha)*100,"% Confidence Interval of ACME is",c(ci_low_eta,ci_up_eta), "; \n")
   cat("The test of Null Hypothesis ACME=0 at level",alpha,"is",null_test,", p-value is",p_value, " \n")
 
 
@@ -176,6 +198,11 @@ simest <- function(gamma_hat,tau_hat,sd_u,prop=1,alpha=0.05,b=1000){
   output2$p_value <- p_value #eta
   output2$ci_up_eta <- ci_up_eta
   output2$ci_low_eta <- ci_low_eta
+
+  output2$Q <- Q
+  output2$pvalue_q <- pvalue_q
+  output2$I_2 <- I_2
+
 
   output2$dat_sub <- dat_sub
 

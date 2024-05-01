@@ -38,6 +38,12 @@ simest(gamma_hat, tau_hat, sd_u, prop = 1, alpha = 0.05, b = 1000)
 
 \code{ci_low_eta} the lower limit of the at least (1-\code{alpha})\% CI
 
+\code{Q} Cochran’s Q for heterogeneity test
+
+\code{pvalue_q} pvalue for the Cochran’s Q for heterogeneity test
+
+\code{I_2} Higgins & Thompson’s I^2 for heterogeneity test
+
 \code{dat_sub} the hypotheis test and at least (1-\code{alpha})\% CI for each subgroup
 }
 \description{
@@ -54,6 +60,7 @@ simest(example_dat$gamma_hat,example_dat$tau_hat,example_dat$sd_u) # simex estim
 # assign the result to the tmp
 tmp <- simest(example_dat$gamma_hat,example_dat$tau_hat,example_dat$sd_u)
 tmp$ave_med  # extract the value
+tmp$dat_sub  # extract the subgroup information
 
 }
 \references{
