@@ -84,7 +84,7 @@ simest <- function(gamma_hat,tau_hat,sd_u,prop=1,alpha=0.05,b=1000){
     null_test <- "rejected"
   }else{null_test <-  "not rejected"}
 
-  p_value <- min(p_value_gamma,beta_p)  ### our definition of p value under H0
+  p_value <- max(p_value_gamma,beta_p)  ### our definition of p value under H0
 
   # 1-alpha interval
   # we need sqrt(1-alpha) interval for gamma and beta
