@@ -36,9 +36,14 @@
 #' tmp$dat_sub  # extract the subgroup information
 #'
 #' @references Jiawei Fu. 2024. "Extract Mechanisms from Heterogeneous Effects: A New Identification Strategy for Mediation Analysis" \emph{Working Paper}.
-simest <- function(gamma_hat,tau_hat,sd_u,prop=1,alpha=0.05,b=1000){
+simest <- function(gamma_hat,tau_hat,sd_u,X=NULL,prop=1,alpha=0.05,b=1000){
 
-  if(sum(is.na(gamma_hat))>0){cat("gamma has NA")}
+  if(sum(is.na(gamma_hat))>0){stop("gamma has NA")}
+  if(sum(is.na(sd_u))>0){stop("sd_u has NA")}
+  if(sum(is.na(tau_hat))>0){stop("tau_hat has NA")}
+
+
+  ### remove na
 
   n1 <- length(gamma_hat)
   n2 <- length(tau_hat)
@@ -66,13 +71,20 @@ simest <- function(gamma_hat,tau_hat,sd_u,prop=1,alpha=0.05,b=1000){
 
   #### ESTIMATION
 
-  mod <- lm(tau_hat~gamma_hat,x=TRUE,y=TRUE)
+  if(!is.null(X)){
+    lm_formula <- as.formula(paste("tau_hat", paste(c("gamma_hat",names(X)), collapse = ' + '), sep = " ~ "))
+    mod <- lm(lm_formula,data=X, x=TRUE,y=TRUE)
+  }else{
+    mod <- lm(tau_hat~gamma_hat,x=TRUE,y=TRUE)
+  }
+
 
   mod_sim <- simex::simex(mod,B=b,
                    measurement.error = sd_u,
                    SIMEXvariable="gamma_hat",fitting.method ="quad",asymptotic="FALSE")
 
   beta_p <- summary(mod_sim)$coefficients$jackknife["gamma_hat",4]
+
   beta_sd <- summary(mod_sim)$coefficients$jackknife["gamma_hat",2]
   beta <- mod_sim$coefficients[2]
 
@@ -99,6 +111,8 @@ simest <- function(gamma_hat,tau_hat,sd_u,prop=1,alpha=0.05,b=1000){
   p_value_gamma <- 2*pnorm(-abs(z_gamma_mean/z_gamma_sd))
 
   null_test <- NA
+
+  cat(p_value_gamma,beta_p)
 
   if( (p_value_gamma<=alpha) & (beta_p<=alpha) ){
     null_test <- "rejected"
