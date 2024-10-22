@@ -6,6 +6,7 @@
 #' @param gamma_hat a vector of the treatment effect on the mediator.
 #' @param tau_hat a vector of the total treatment effect on the outcome.
 #' @param sd_u a vector of the standard error of `gamma_hat`, the treatment effect on the mediator.
+#' @param X a dataframe of covariates.
 #' @param prop the proportion of each subgroups. The default number 1 means equal proportion.
 #' @param b the number of bootstrap replicates. The default number is 1000.
 #' @param alpha significant level. The default number is 0.05.
@@ -72,7 +73,7 @@ simest <- function(gamma_hat,tau_hat,sd_u,X=NULL,prop=1,alpha=0.05,b=1000){
   #### ESTIMATION
 
   if(!is.null(X)){
-    lm_formula <- as.formula(paste("tau_hat", paste(c("gamma_hat",names(X)), collapse = ' + '), sep = " ~ "))
+    lm_formula <- stats::as.formula(paste("tau_hat", paste(c("gamma_hat",names(X)), collapse = ' + '), sep = " ~ "))
     mod <- lm(lm_formula,data=X, x=TRUE,y=TRUE)
   }else{
     mod <- lm(tau_hat~gamma_hat,x=TRUE,y=TRUE)
@@ -222,3 +223,5 @@ simest <- function(gamma_hat,tau_hat,sd_u,X=NULL,prop=1,alpha=0.05,b=1000){
 
   invisible(output2)
 }
+
+
