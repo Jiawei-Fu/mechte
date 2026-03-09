@@ -73,20 +73,32 @@ simest <- function(gamma_hat,tau_hat,sd_u,X=NULL,prop=1,alpha=0.05,b=1000){
   #### ESTIMATION
 
   if(!is.null(X)){
-    lm_formula <- stats::as.formula(paste("tau_hat", paste(c("gamma_hat",names(X)), collapse = ' + '), sep = " ~ "))
-    mod <- lm(lm_formula,data=X, x=TRUE,y=TRUE)
+    dat <- data.frame(tau_hat = tau_hat, gamma_hat = gamma_hat, X)
+    mod <- lm(
+      stats::as.formula(paste("tau_hat", paste(c("gamma_hat", names(X)), collapse = " + "), sep = " ~ ")),
+      data = dat,
+      x = TRUE,
+      y = TRUE
+    )
+    mod$call$formula <- formula(mod)
   }else{
-    mod <- lm(tau_hat~gamma_hat,x=TRUE,y=TRUE)
+    mod <- lm(tau_hat ~ gamma_hat, x = TRUE, y = TRUE)
   }
 
 
-  mod_sim <- simex::simex(mod,B=b,
-                   measurement.error = sd_u,
-                   SIMEXvariable="gamma_hat",fitting.method ="quad",asymptotic="FALSE")
+  mod_sim <- simex::simex(
+    mod,
+    B = b,
+    measurement.error = sd_u,
+    SIMEXvariable = "gamma_hat",
+    fitting.method = "quadratic",
+    asymptotic = FALSE
+  )
+  reg_table <- summary(mod_sim)$coefficients$jackknife
 
-  beta_p <- summary(mod_sim)$coefficients$jackknife["gamma_hat",4]
+  beta_p <- reg_table["gamma_hat",4]
 
-  beta_sd <- summary(mod_sim)$coefficients$jackknife["gamma_hat",2]
+  beta_sd <- reg_table["gamma_hat",2]
   beta <- mod_sim$coefficients[2]
 
   ### inference
@@ -97,7 +109,7 @@ simest <- function(gamma_hat,tau_hat,sd_u,X=NULL,prop=1,alpha=0.05,b=1000){
     gamma_sd_new <- prop_new*sd_u}
   if(length(prop)==1 & prop[1]!=1){stop("The proportion has one value and is not 1; it should be a vetor or 1 ")}
   if(length(prop)!=1 & length(prop)!=n1){stop("Length of prop is not equal to the length of gamma.")}
-  if(length(prop)!=1 & sum(prop)!=n1){cat("Sum of the prop is not equal to 1. \n")}
+  if(length(prop)!=1 & sum(prop)!=1){cat("Sum of the prop is not equal to 1. \n")}
   if(length(prop)!=1 & sum(prop<=0)>0){stop("Prop has non positive terms.")}
   if(length(prop)!=1 ){
     gamma_new <- prop*gamma_hat
@@ -112,8 +124,6 @@ simest <- function(gamma_hat,tau_hat,sd_u,X=NULL,prop=1,alpha=0.05,b=1000){
   p_value_gamma <- 2*pnorm(-abs(z_gamma_mean/z_gamma_sd))
 
   null_test <- NA
-
-  cat(p_value_gamma,beta_p)
 
   if( (p_value_gamma<=alpha) & (beta_p<=alpha) ){
     null_test <- "rejected"
@@ -178,22 +188,6 @@ simest <- function(gamma_hat,tau_hat,sd_u,X=NULL,prop=1,alpha=0.05,b=1000){
     dat_sub$p_value[i] <- max(p_value_subgroup[i],beta_p)
   }
 
-
-
-  ### output
-
-  cat("The regression outcomes with SIMEX:", "\n")
-  printCoefmat(summary(mod_sim)$coefficients$jackknife, P.values = TRUE, has.Pvalue = TRUE)
-
-  cat("\n")
-  cat("Heterogenity Test: Cochran’s Q",Q, "p-value is",pvalue_q, "; \n")
-  cat("Heterogenity Test: Higgins & Thompson’s I^2 is",I_2*100, "%; \n")
-
-  cat("The average causal mediation effect (ACME) is",ave_med, "; \n")
-  cat("The at least",(1-alpha)*100,"% Confidence Interval of ACME is",c(ci_low_eta,ci_up_eta), "; \n")
-  cat("The test of Null Hypothesis ACME=0 at level",alpha,"is",null_test,", p-value is",p_value, " \n")
-
-
   # for extract
 
   output2 <- list()
@@ -201,11 +195,11 @@ simest <- function(gamma_hat,tau_hat,sd_u,X=NULL,prop=1,alpha=0.05,b=1000){
   output2$beta <- mod_sim$coefficients[2]
   output2$alpha <- mod_sim$coefficients[1]
 
-  output2$se_alpha <- summary(mod_sim)$coefficients$jackknife[1,2]
-  output2$se_beta <- summary(mod_sim)$coefficients$jackknife[2,2]
+  output2$se_alpha <- reg_table[1,2]
+  output2$se_beta <- reg_table[2,2]
 
-  output2$p_beta <- summary(mod_sim)$coefficients$jackknife[2,4]
-  output2$p_alpha <- summary(mod_sim)$coefficients$jackknife[1,4]
+  output2$p_beta <- reg_table[2,4]
+  output2$p_alpha <- reg_table[1,4]
 
   output2$acme <- ave_med
 
@@ -220,8 +214,16 @@ simest <- function(gamma_hat,tau_hat,sd_u,X=NULL,prop=1,alpha=0.05,b=1000){
 
 
   output2$dat_sub <- dat_sub
+  output2$reg_table <- reg_table
+  output2$null_test <- null_test
+  output2$alpha_level <- alpha
+  output2$plot_data <- data.frame(
+    gamma_hat = gamma_hat,
+    tau_hat = tau_hat,
+    sd_u = sd_u
+  )
+
+  class(output2) <- "mechte_simest"
 
   invisible(output2)
 }
-
-

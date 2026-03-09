@@ -4,7 +4,7 @@
 \alias{simest}
 \title{Causal Mediation with SIMEX estimator}
 \usage{
-simest(gamma_hat, tau_hat, sd_u, prop = 1, alpha = 0.05, b = 1000)
+simest(gamma_hat, tau_hat, sd_u, X = NULL, prop = 1, alpha = 0.05, b = 1000)
 }
 \arguments{
 \item{gamma_hat}{a vector of the treatment effect on the mediator.}
@@ -12,6 +12,8 @@ simest(gamma_hat, tau_hat, sd_u, prop = 1, alpha = 0.05, b = 1000)
 \item{tau_hat}{a vector of the total treatment effect on the outcome.}
 
 \item{sd_u}{a vector of the standard error of \code{gamma_hat}, the treatment effect on the mediator.}
+
+\item{X}{a dataframe of covariates.}
 
 \item{prop}{the proportion of each subgroups. The default number 1 means equal proportion.}
 
@@ -40,9 +42,9 @@ simest(gamma_hat, tau_hat, sd_u, prop = 1, alpha = 0.05, b = 1000)
 
 \code{Q} Cochran’s Q for heterogeneity test
 
-\code{pvalue_q} pvalue for the Cochran’s Q for heterogeneity test
+\code{pvalue_q} pvalue for the Cochran's Q for heterogeneity test
 
-\code{I_2} Higgins & Thompson’s I^2 for heterogeneity test
+\code{I_2} Higgins & Thompson's I^2 for heterogeneity test
 
 \code{dat_sub} the hypotheis test and at least (1-\code{alpha})\% CI for each subgroup
 }

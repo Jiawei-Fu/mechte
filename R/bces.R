@@ -185,9 +185,6 @@ bces <- function(gamma_hat,tau_hat,sd_u,sd_v,confid=0.05, bootstrap=TRUE, b=1000
   output[1,5] <- pvalue_alpha
   output[2,5] <- pvalue_beta
 
-  cat("The regression outcomes without bootstrap:", "\n")
-  printCoefmat(output, P.values = TRUE, has.Pvalue = TRUE)
-
   if(bootstrap==TRUE){
     output1 <- matrix(NA, nrow = 2, ncol = 4)
     rownames(output1) <- c("(Intercept)","gamma_hat")
@@ -204,15 +201,11 @@ bces <- function(gamma_hat,tau_hat,sd_u,sd_v,confid=0.05, bootstrap=TRUE, b=1000
 
     output1[1,4] <- boot_p_alpha
     output1[2,4] <- boot_p_beta
-    cat("\n")
-    cat("The regression outcomes with bootstrap:", "\n")
-    printCoefmat(output1, P.values = TRUE, has.Pvalue = TRUE)
+  } else {
+    output1 <- NULL
   }
 
   ave_med <- mean(beta_bces*gamma_hat)
-
-  cat("\n")
-  cat("The average mediation effect is",ave_med,".", "\n")
 
   # for extract
   output2 <- list()
@@ -230,6 +223,10 @@ bces <- function(gamma_hat,tau_hat,sd_u,sd_v,confid=0.05, bootstrap=TRUE, b=1000
   output2$p_alpha <- pvalue_alpha
 
   output2$ave_med <- ave_med
+  output2$reg_table <- output
+  output2$boot_table <- output1
+  output2$bootstrap <- bootstrap
+  output2$confid <- confid
 
   if(bootstrap==TRUE){
     output2$boot_ci_beta <- c(ci_beta_low,ci_beta_upp)
@@ -238,6 +235,7 @@ bces <- function(gamma_hat,tau_hat,sd_u,sd_v,confid=0.05, bootstrap=TRUE, b=1000
     output2$boot_p_alpha <-  boot_p_alpha
   }
 
+  class(output2) <- "mechte_bces"
+
   invisible(output2)
 }
-
