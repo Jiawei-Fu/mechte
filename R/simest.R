@@ -33,10 +33,11 @@
 #'
 #' # assign the result to the tmp
 #' tmp <- simest(example_dat$gamma_hat,example_dat$tau_hat,example_dat$sd_u)
-#' tmp$ave_med  # extract the value
+#' summary(tmp) # show all results
+#' tmp$acme  # extract the value
 #' tmp$dat_sub  # extract the subgroup information
 #'
-#' @references Jiawei Fu. 2024. "Extract Mechanisms from Heterogeneous Effects: A New Identification Strategy for Mediation Analysis" \emph{Working Paper}.
+#' @references Jiawei Fu. 2026. "Extract Mechanisms from Heterogeneous Effects: A New Identification Strategy for Mediation Analysis" \emph{Working Paper}.
 simest <- function(gamma_hat,tau_hat,sd_u,X=NULL,prop=1,alpha=0.05,b=1000){
 
   if(sum(is.na(gamma_hat))>0){stop("gamma has NA")}
@@ -99,7 +100,7 @@ simest <- function(gamma_hat,tau_hat,sd_u,X=NULL,prop=1,alpha=0.05,b=1000){
   beta_p <- reg_table["gamma_hat",4]
 
   beta_sd <- reg_table["gamma_hat",2]
-  beta <- mod_sim$coefficients[2]
+  beta <- unname(mod_sim$coefficients[2])
 
   ### inference
 
@@ -152,7 +153,7 @@ simest <- function(gamma_hat,tau_hat,sd_u,X=NULL,prop=1,alpha=0.05,b=1000){
   ci_up_eta <- max(tmp_a,tmp_b,tmp_c,tmp_d)
   ci_low_eta <- min(tmp_a,tmp_b,tmp_c,tmp_d)
 
-  ave_med <- z_gamma_mean*beta
+  ave_med <- unname(z_gamma_mean * beta)
 
 
   ##### CI and hypothesis test for each group
@@ -192,8 +193,8 @@ simest <- function(gamma_hat,tau_hat,sd_u,X=NULL,prop=1,alpha=0.05,b=1000){
 
   output2 <- list()
 
-  output2$beta <- mod_sim$coefficients[2]
-  output2$alpha <- mod_sim$coefficients[1]
+  output2$beta <- unname(mod_sim$coefficients[2])
+  output2$alpha <- unname(mod_sim$coefficients[1])
 
   output2$se_alpha <- reg_table[1,2]
   output2$se_beta <- reg_table[2,2]
@@ -201,7 +202,7 @@ simest <- function(gamma_hat,tau_hat,sd_u,X=NULL,prop=1,alpha=0.05,b=1000){
   output2$p_beta <- reg_table[2,4]
   output2$p_alpha <- reg_table[1,4]
 
-  output2$acme <- ave_med
+  output2$acme <- unname(ave_med)
 
   output2$p_value_gamma <- p_value_gamma
   output2$p_value <- p_value #eta

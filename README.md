@@ -36,6 +36,7 @@ set.seed(1)
 tmp <- simest(example_dat$gamma_hat,example_dat$tau_hat,example_dat$sd_u)
 summary(tmp)
 
+tmp$acme  # extract the value
 tmp$dat_sub
 ```
 The output also shows the average causal mediation effects (ACME), hypotheis testing, p-value, and at least (1-`alpha`) % Confidence Interval. The `dat_sub` shows the amce for each groups.
@@ -45,7 +46,6 @@ We can also visualize the result with following code. The resulting plot will di
 
 ```r
 set.seed(1)
-plot(tmp)
 plot(tmp,sd_v=example_dat$tau_hat) # add confidence interval for tau
 ```
 or you can run

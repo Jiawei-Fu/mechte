@@ -61,10 +61,11 @@ simest(example_dat$gamma_hat,example_dat$tau_hat,example_dat$sd_u) # simex estim
 
 # assign the result to the tmp
 tmp <- simest(example_dat$gamma_hat,example_dat$tau_hat,example_dat$sd_u)
-tmp$ave_med  # extract the value
+summary(tmp) # show all results
+tmp$acme  # extract the value
 tmp$dat_sub  # extract the subgroup information
 
 }
 \references{
-Jiawei Fu. 2024. "Extract Mechanisms from Heterogeneous Effects: A New Identification Strategy for Mediation Analysis" \emph{Working Paper}.
+Jiawei Fu. 2026. "Extract Mechanisms from Heterogeneous Effects: A New Identification Strategy for Mediation Analysis" \emph{Working Paper}.
 }
